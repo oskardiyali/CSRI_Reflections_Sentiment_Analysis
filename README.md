@@ -26,9 +26,7 @@ This project analyzes student-written reflections to identify emotional tone and
 ```
 student-sentiment-analysis/
 │
-├── data/
-│   └── student_reflections_with_question.csv
-│
+├── student_reflections_with_question_long.csv
 ├── sentiment_analysis.Rmd   # R Markdown notebook with full analysis
 ├── sentiment_analysis.html  # Rendered HTML output (if knitted)
 ├── README.md                # Project overview and documentation
