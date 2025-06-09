@@ -1,53 +1,65 @@
 # Sentiment Analysis of Student Reflections
 
-This project analyzes student-written reflections to identify emotional tone and intensity using two popular sentiment analysis methods in R: AFINN and NRC. The goal is to explore how students emotionally respond to academic tasks and to visualize sentiment trends across responses.
+This project performs a sentence-level sentiment analysis of student-written reflections using two lexicon-based methods in R: **AFINN** and **NRC**. The goal is to explore the emotional tone and affective content within responses to a shared academic reflection prompt.
 
 ---
 
-## Project Overview
+## Project Summary
 
-- **Dataset**: Student responses to the same reflection prompt.
-- **Prompt**: 
+- **Dataset**: 20 student responses to a common reflection question.
+- **Prompt**: *"Reflect on an academic or personal experience from your time at university that shaped your growth or perspective."*
 - **Tech Stack**: R, tidyverse, tidytext, syuzhet, ggplot2
 
 ---
 
-##  Objectives
+## Objectives
 
-- Tokenize and score student reflection responses at the sentence level.
-- Identify the most positive statements using AFINN sentiment values.
-- Classify emotional content using NRC emotion categories (e.g., joy, trust, sadness).
-- Visualize sentiment distribution and emotional themes.
+- Tokenize reflections at the **sentence level** for more granular sentiment detection.
+- Score each sentence using the **AFINN** lexicon (numerical polarity).
+- Classify emotion types using the **NRC** lexicon (e.g., joy, fear, trust).
+- Visualize the **distribution of sentiment scores** and **emotion categories**.
+- Identify the **most positive sentences** and common emotional patterns.
+
+>  *Note: This version reflects the first full implementation. Further guidance from the supervising professor may refine or shift the analytical direction (e.g., comparing sentiment by question or student).*
 
 ---
 
-##  File Structure
+## File Structure
 
 ```
-student-sentiment-analysis/
+CSRI_Reflections_Sentiment_Analysis/
 │
-├── student_reflections_with_question_long.csv
-├── sentiment_analysis.Rmd   # R Markdown notebook with full analysis
-├── sentiment_analysis.html  # Rendered HTML output (if knitted)
-├── README.md                # Project overview and documentation
+├── data/
+│   └── student_reflections_with_question_long.csv
+│   └── student_reflections_with_question_long.csv
+│   └── student_reflections_with_question_long.csv
+├── Sentiment_CSRI.Rmd # Main RMarkdown analysis file
+├── Sentiment_CSRI.html # Rendered HTML report (optional)
+├── README.md # Project overview and documentation
+├── .gitignore # Files excluded from Git
+
 ```
+
 
 ---
 
 ##  Sample Visuals
 
-- Histogram of sentiment scores using AFINN
-- Top 5 most positive student sentences
-- Emotion breakdown (joy, anger, trust, etc.) using NRC
+- Histogram of sentiment scores (AFINN)
+- Top 5 most positive sentences
+- Emotion frequency barplot (NRC)
 
 ---
 
-##  Insights
+##  Preliminary Insights
 
-- Positive sentiments were often tied to achievement, growth, and support.
-- Some reflections also expressed frustration or anxiety depending on task complexity.
-- Joy and trust were the most common emotions observed overall.
+- **Joy** and **trust** appear most frequently across reflections.
+- **Positive sentiment** often aligns with experiences involving growth, support, or overcoming challenges.
+- A few reflections contain **negative or mixed emotions**, often related to difficult transitions or academic struggles.
 
 ---
 
-Developed by Oskar Diyali as part of an academic research initiative in text analysis and educational data mining.
+**Developed by Oskar Diyali**  
+Cornell College | 2025  
+GitHub: [github.com/oskardiyali](https://github.com/oskardiyali)
+
