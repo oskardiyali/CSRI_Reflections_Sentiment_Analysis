@@ -12,7 +12,7 @@ This project analyzes student-written reflections to identify emotional tone and
 
 ---
 
-## 🔍 Objectives
+##  Objectives
 
 - Tokenize and score student reflection responses at the sentence level.
 - Identify the most positive statements using AFINN sentiment values.
@@ -21,7 +21,7 @@ This project analyzes student-written reflections to identify emotional tone and
 
 ---
 
-## 📁 File Structure
+##  File Structure
 
 ```
 student-sentiment-analysis/
