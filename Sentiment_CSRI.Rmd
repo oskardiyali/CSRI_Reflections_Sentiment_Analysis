@@ -4,41 +4,43 @@ author: "Oskar Diyali"
 output: html_document
 ---
 
-## 📌 Objective
+## Objective
 
-This analysis evaluates the sentiment of 20 student (for now) reflection responses using two approaches:
-- **AFINN Lexicon** via `tidytext` for sentence-level sentiment scoring
-- **NRC Emotion Lexicon** via `syuzhet` for emotion classification  
-It also analyzes sentiment in the context of specific reflection questions.
+This analysis explores the sentiment expressed in 20 student reflection responses to a common question:  
+**"What did you learn or experience from this task?"** (for now)
+
+Two approaches are used for sentiment analysis:
+- **AFINN Lexicon** via `tidytext` to score sentiment at the sentence level
+- **NRC Emotion Lexicon** via `syuzhet` to classify emotional categories
 
 ---
 
-## 1. Load Libraries
+## 1. Load Required Libraries
 
-```{r}
+```{r 1}
+
 library(tidyverse)
 library(tidytext)
 library(syuzhet)
 library(readr)
 library(ggplot2)
+
 ```
 
 ## 2. Load the Data
-```{r}
-# Load reflection responses that include reflection question
-reflections <- read_csv("student_reflections_with_question.csv")
+```{r 2}
 
-# Preview the dataset
-head(reflections)
+# Load student reflections including the question column
+reflections <- read_csv("data/student_reflections_with_question_long.csv")
 
 
 ```
 
 
 ## 3. Sentence Tokenization
-```{r}
+```{r 3}
 
-# Break reflections into individual sentences
+# Split each reflection into individual sentences
 sentences <- reflections %>%
   unnest_tokens(sentence, reflection, token = "sentences")
 
@@ -47,9 +49,9 @@ sentences <- reflections %>%
 
 
 ## 4. Word Tokenization
-```{r}
+```{r 4}
 
-# Assign unique sentence IDs and tokenize into words
+# Assign a unique sentence ID and tokenize each sentence into words
 words <- sentences %>%
   mutate(sentence_id = row_number()) %>%
   unnest_tokens(word, sentence)
@@ -59,12 +61,12 @@ words <- sentences %>%
 
 
 ## 5. AFINN Sentiment Analysis
-```{r}
+```{r 5}
 
 # Load AFINN lexicon
 afinn <- get_sentiments("afinn")
 
-# Join with tokenized words
+# Join with tokenized words to assign sentiment values
 scored_words <- words %>%
   inner_join(afinn, by = "word")
 
@@ -74,8 +76,9 @@ scored_words <- words %>%
 
 ## 6. Sum Sentiment Per Sentence
 
-```{r}
-# Compute sentence-level sentiment scores
+```{r 6}
+
+# Calculate total sentiment score per sentence
 sentence_scores <- scored_words %>%
   group_by(sentence_id) %>%
   summarise(sentiment = sum(value), .groups = "drop") %>%
@@ -83,13 +86,15 @@ sentence_scores <- scored_words %>%
   left_join(reflections, by = "student_id") %>%
   select(student_id, question, sentence_id, sentiment, reflection)
 
+sentence_scores
 
 ```
 
 
 ## 7. Top Positive Sentences (AFINN)
-```{r}
-# Display top 5 most positive sentences
+```{r 7}
+
+# Identify the five most positive-scoring sentences
 top_sentences <- sentence_scores %>%
   arrange(desc(sentiment)) %>%
   distinct(sentence_id, .keep_all = TRUE) %>%
@@ -101,33 +106,53 @@ top_sentences
 ```
 
 ## 8. Histogram of AFINN Sentiment Scores
-```{r}
+```{r 8}
 
-# Plot distribution of sentiment scores per sentence
+# Histogram for sentiment scores
 ggplot(sentence_scores, aes(x = sentiment)) +
-  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
-  theme_minimal() +
+  geom_histogram(
+    binwidth = 1,
+    fill = "#0072B2",
+    color = "white",
+    boundary = 0,
+    closed = "left"
+  ) +
+  scale_x_continuous(
+    breaks = scales::pretty_breaks(), 
+    expand = expansion(mult = c(0, 0))  
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +  
   labs(
-    title = "AFINN Sentiment Score Distribution",
-    x = "Sentiment Score per Sentence",
+    title = "Distribution of AFINN Sentiment Scores per Sentence",
+    x = "AFINN Sentiment Score",
     y = "Number of Sentences"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold"),
+    axis.text = element_text(color = "black"),
+    axis.line = element_line(color = "black", linewidth = 0.5),
+    panel.grid = element_blank()
   )
+
+
 
 
 ```
 
 ## 9. NRC Emotion Analysis using 'syuzhet'
 
-```{r}
+```{r 9}
 
-# Apply NRC emotion scoring to entire reflections
+# Apply NRC emotion lexicon to full reflections
 nrc_emotions <- get_nrc_sentiment(reflections$reflection)
 
-# Bind question and student_id for reference
+# Combine emotions with student metadata
 nrc_df <- bind_cols(reflections %>% select(student_id, question), nrc_emotions)
 
-# Preview the result
 head(nrc_df)
+
 
 
 
@@ -136,23 +161,27 @@ head(nrc_df)
 
 ## 10. Emotion Summary Plot (NRC)
 
-```{r}
+```{r 10}
 
-# Summarize total emotions across all reflections
-nrc_summary <- nrc_emotions %>%
-  summarise(across(everything(), sum)) %>%
-  pivot_longer(cols = everything(), names_to = "emotion", values_to = "count")
-
-# Plot NRC emotion categories
-ggplot(nrc_summary, aes(x = reorder(emotion, -count), y = count)) +
-  geom_col(fill = "darkorange") +
-  coord_flip() +
+ggplot(nrc_summary, aes(x = reorder(emotion, count), y = count)) +
+  geom_col(fill = "#D55E00", width = 0.8) +
+  geom_text(aes(label = count), hjust = -0.1, size = 4.2) +
+  coord_flip(clip = "off") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +  
   labs(
-    title = "Emotion Counts in Student Reflections (NRC)",
-    x = "Emotion",
-    y = "Frequency"
+    title = "Frequency of Emotion Words in Student Reflections (NRC)",
+    x = "Emotion Category",
+    y = "Word Count"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold"),
+    panel.grid = element_blank(),
+    axis.line = element_line(color = "black"),
+    plot.margin = margin(10, 30, 10, 10)  
+  )
+
 
 
 
