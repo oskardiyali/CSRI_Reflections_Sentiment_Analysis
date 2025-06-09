@@ -6,8 +6,8 @@ This project performs a sentence-level sentiment analysis of student-written ref
 
 ## Project Summary
 
-- **Dataset**: 20 student responses to a common reflection question.
-- **Prompt**: *"Reflect on an academic or personal experience from your time at university that shaped your growth or perspective."*
+- **Dataset**: 20 student responses(sample) to a common reflection question.
+- **Prompt**: *"Sample Prompt: What did you learn or experience from this task?"*
 - **Tech Stack**: R, tidyverse, tidytext, syuzhet, ggplot2
 
 ---
