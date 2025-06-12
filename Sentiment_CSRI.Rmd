@@ -24,6 +24,9 @@ library(tidytext)
 library(syuzhet)
 library(readr)
 library(ggplot2)
+library(wordcloud)
+library(RColorBrewer)
+
 
 ```
 
@@ -183,6 +186,53 @@ ggplot(nrc_summary, aes(x = reorder(emotion, count), y = count)) +
   )
 
 
+
+
+```
+
+
+```{r 11}
+
+# Count frequency of sentiment words
+word_freq <- scored_words %>%
+  count(word, value, sort = TRUE)
+
+# Separate positive and negative words
+positive_words <- word_freq %>% filter(value > 0)
+negative_words <- word_freq %>% filter(value < 0)
+
+# Limit to top 100 words (optional)
+top_pos <- positive_words %>% slice_max(n, n = 100)
+top_neg <- negative_words %>% slice_max(n, n = 100)
+
+
+
+```
+
+
+```{r 12}
+
+wordcloud(
+  words = top_pos$word,
+  freq = top_pos$n,
+  scale = c(4.3, 0.8),
+  min.freq = 1,
+  colors = brewer.pal(9, "Greens"),
+  random.order = FALSE
+)
+
+```
+
+```{r 13}
+
+wordcloud(
+  words = top_neg$word,
+  freq = top_neg$n,
+  scale = c(4, 0.8),
+  min.freq = 1,
+  colors = brewer.pal(4, "Reds"),
+  random.order = FALSE
+)
 
 
 ```
